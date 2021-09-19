@@ -10,14 +10,11 @@ const String baseUrl = 'https://music.bugs.co.kr/track/';
 /// 중복된 노래 제목이 존재하므로 `제목, 가수명`으로 검색하는 것이다.
 /// (ex. 고백 - 10cm / 고백 - 뜨거운 감자)
 String _getSearchPageUrl(String title, String artist) {
-  title = title.replaceAll(" ", "%20");
-  artist = "%2C%20" + artist.replaceAll(" ", "%20");
+  final uri = title + ", " + artist;
 
-  String searchQuery = title + artist;
+  String searchQuery = Uri.encodeFull(uri).toString();
 
-  print(searchQuery);
-
-  return 'https://music.bugs.co.kr/search/integrated?q=$searchQuery';
+  return 'https://music.bugs.co.kr/search/track?q=$searchQuery';
 }
 
 /// 검색된 곡 중 알맞은 곡의 고유 ID 값을 받아온다.

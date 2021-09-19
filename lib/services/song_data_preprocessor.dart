@@ -42,7 +42,9 @@ class SongDataPreprocessor {
     String filteredTitle = "";
 
     filteredTitle = title.split("(피처링")[0];
-
+    filteredTitle = filteredTitle.split("(")[0];
+    filteredTitle = filteredTitle.split("[")[0];
+ 
     // 제목에 영어와 한국어 모두 포함되어있을 때
     if (!_korean.hasMatch(filteredTitle) && !_english.hasMatch(filteredTitle))
       filteredTitle = _divideLanguage(title);
@@ -52,7 +54,7 @@ class SongDataPreprocessor {
 
   /// 벅스 검색에 최적화 된 가수명 필터링 함수이다.
   ///
-  /// `artist` 값을 전처리를 진행하여 멜론에서 검색될 수 있는 정보만 필터링해온다.
+  /// `artist` 값을 전처리를 진행하여 벅스에서 검색될 수 있는 정보만 필터링해온다.
   /// 이때 가수명에 콤마와 `및` 이 포함된 경우는 `split`을 통해 앞에 있는 정보만 가져온다.
   /// 또한 괄호안에 가수의 영문을 써놓는 경우 제외시킨다.
   /// 위의 과정을 거쳐도 한글과 영문이 혼용되있을 경우도 마지막으로 필터링한다.
