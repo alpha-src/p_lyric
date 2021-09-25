@@ -63,6 +63,7 @@ class PermissionProvider extends GetxController with WidgetsBindingObserver {
       await Get.bottomSheet(
         const PermissionBottomSheet(),
         isDismissible: false,
+        enableDrag: false,
       );
     }
   }

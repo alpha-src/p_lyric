@@ -18,14 +18,19 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final iconThemeData = const IconThemeData(color: Colors.white70);
-    final cardShape = const RoundedRectangleBorder(
-      borderRadius: const BorderRadius.all(const Radius.circular(12.0)),
-    );
-
+    const iconThemeData = const IconThemeData(color: Colors.white54);
     final themeData = ThemeData(
       iconTheme: iconThemeData,
       primaryTextTheme: poppinsTextTheme.apply(fontFamily: FontFamily.poppins),
+    );
+
+    const cardShape = const RoundedRectangleBorder(
+      borderRadius: const BorderRadius.all(const Radius.circular(12.0)),
+    );
+    const cardTheme = const CardTheme(
+      shape: cardShape,
+      shadowColor: Colors.black54,
+      elevation: 6.0,
     );
 
     return GetMaterialApp(
@@ -37,8 +42,8 @@ class MyApp extends StatelessWidget {
           bodyColor: Colors.black87,
           displayColor: Colors.black87,
         ),
-        cardTheme: CardTheme(color: const Color(0xe6ffffff), shape: cardShape),
-        popupMenuTheme: PopupMenuThemeData(
+        cardTheme: cardTheme.copyWith(color: const Color(0xd6ffffff)),
+        popupMenuTheme: const PopupMenuThemeData(
           shape: cardShape,
           color: Colors.white,
         ),
@@ -51,8 +56,8 @@ class MyApp extends StatelessWidget {
           bodyColor: Colors.white,
           displayColor: Colors.white,
         ),
-        cardTheme: CardTheme(color: const Color(0xe6121212), shape: cardShape),
-        popupMenuTheme: PopupMenuThemeData(
+        cardTheme: cardTheme.copyWith(color: const Color(0xd6121212)),
+        popupMenuTheme: const PopupMenuThemeData(
           shape: cardShape,
           color: const Color(0xff121212),
         ),

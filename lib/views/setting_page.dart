@@ -12,11 +12,11 @@ class SettingPage extends StatefulWidget {
 
 class _SettingPageState extends State<SettingPage> {
   static const Icon _warningIcon = const Icon(
-    Icons.warning,
+    Icons.warning_rounded,
     color: const Color(0xFFFF8A80),
   );
   static const Icon _activatedIcon = const Icon(
-    Icons.check_circle,
+    Icons.check_circle_rounded,
     color: Colors.greenAccent,
   );
 

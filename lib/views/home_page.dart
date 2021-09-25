@@ -131,7 +131,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                 IconButton(
                   onPressed: _handleCollapseButtonTap,
                   tooltip: '작은 창으로 전환',
-                  icon: Icon(Icons.fullscreen_exit),
+                  icon: Icon(Icons.fullscreen_exit_rounded),
                 ),
               ],
             ),
@@ -197,7 +197,9 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
               child: AnimatedSwitcher(
                 duration: kThemeChangeDuration,
                 child: Icon(
-                  isReachedEnd ? Icons.arrow_upward : Icons.arrow_downward,
+                  isReachedEnd
+                      ? Icons.arrow_upward_rounded
+                      : Icons.arrow_downward_rounded,
                   key: ValueKey(isReachedEnd),
                   color: Colors.black87,
                 ),
@@ -305,39 +307,8 @@ class _AlbumCoverImage extends StatelessWidget {
   }
 }
 
-class _ControlBar extends StatefulWidget {
+class _ControlBar extends StatelessWidget {
   const _ControlBar({Key? key}) : super(key: key);
-
-  @override
-  _ControlBarState createState() => _ControlBarState();
-}
-
-class _ControlBarState extends State<_ControlBar>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _animation;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: kThemeChangeDuration,
-      reverseDuration: kThemeChangeDuration,
-    );
-
-    _animation = CurvedAnimation(
-      parent: Tween(begin: 0.0, end: 1.0).animate(_controller),
-      curve: Curves.easeOut,
-      reverseCurve: Curves.easeIn,
-    );
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -347,13 +318,14 @@ class _ControlBarState extends State<_ControlBar>
       ),
       child: GetBuilder<MusicProvider>(
         builder: (musicProvider) {
+          bool isPlaying;
           switch (musicProvider.trackState) {
             case NowPlayingState.playing:
-              _controller.forward();
+              isPlaying = true;
               break;
             case NowPlayingState.paused:
             case NowPlayingState.stopped:
-              _controller.reverse();
+              isPlaying = false;
               break;
           }
           return Row(
@@ -364,22 +336,21 @@ class _ControlBarState extends State<_ControlBar>
                 onPressed: musicProvider.skipToPrevious,
                 iconSize: 32,
                 padding: EdgeInsets.zero,
-                icon: Icon(Icons.skip_previous),
+                icon: Icon(Icons.skip_previous_rounded),
               ),
               IconButton(
                 onPressed: musicProvider.playOrPause,
                 iconSize: 40,
                 padding: EdgeInsets.zero,
-                icon: AnimatedIcon(
-                  icon: AnimatedIcons.play_pause,
-                  progress: _animation,
+                icon: Icon(
+                  isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
                 ),
               ),
               IconButton(
                 onPressed: musicProvider.skipToNext,
                 iconSize: 32,
                 padding: EdgeInsets.zero,
-                icon: Icon(Icons.skip_next),
+                icon: Icon(Icons.skip_next_rounded),
               ),
             ],
           );
