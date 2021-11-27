@@ -1,9 +1,48 @@
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' as parser;
 import 'package:html/dom.dart' as dom;
-import 'package:p_lyric/services/song_data_preprocessor.dart';
+import 'package:p_lyric/models/song.dart';
+import 'package:p_lyric/constants/error_message.dart';
 
 const String baseUrl = 'https://music.bugs.co.kr/track/';
+
+/// searchQuery 를 통해 벅스에서 검색할 시 특수문자는 Uri.encodeFull 메소드에
+/// 적용되지 않는 문제점을 아래의 함수로 해결
+String encodeSpecial(String targetURI) {
+  String ret = "";
+  RegExp _special = RegExp(r"^[+#$&?]*$");
+  List<String> words = targetURI.split("");
+
+  //# $ & + ?
+  for (final word in words) {
+    if (word != " " && _special.hasMatch(word)) {
+      switch (word) {
+        case "#":
+          ret += "%23";
+          break;
+
+        case "\$":
+          ret += "%24";
+          break;
+
+        case "&":
+          ret += "%26";
+          break;
+
+        case "+":
+          ret += "%2B";
+          break;
+
+        case "?":
+          ret += "%3F";
+          break;
+      }
+    } else
+      ret += word;
+  }
+
+  return ret;
+}
 
 /// [title], [arist] 형식으로 검색 페이지의 URL을 얻는다.
 ///
@@ -13,6 +52,7 @@ String _getSearchPageUrl(String title, String artist) {
   final uri = title + ", " + artist;
 
   String searchQuery = Uri.encodeFull(uri).toString();
+  searchQuery = encodeSpecial(searchQuery);
 
   return 'https://music.bugs.co.kr/search/track?q=$searchQuery';
 }
@@ -52,31 +92,33 @@ Future<bool> isExplicitSong(String songID) async {
 ///
 /// replaceAll("...*", "") 부분은 팝송 중 간혹 "...*" 을 마지막에 포함시키는
 /// 일종의 워터마크 같은 문자열이 있어 이 부분은 없애준다.
-Future<String> getLyricsFromBugs(String songTitle, String songArtist) async {
-  if (songTitle == '' || songArtist == '') return "곡 정보가 없습니다 😢";
+Future<String> getLyricsFromBugs(String title, String artist) async {
+  Song returnSong = Song.fromBugs(title, artist);
 
-  String title = SongDataPreprocessor.filterSongTitle(songTitle);
-  String artist = SongDataPreprocessor.filterArtist(songArtist);
+  if (title == '' || artist == '') return returnSong.lyrics;
 
   String searchPageUrl = _getSearchPageUrl(title, artist);
+  print(searchPageUrl);
   String songID = await _getSongID(searchPageUrl);
   bool isExplicit = await isExplicitSong(songID);
 
   try {
-    if (isExplicit) throw "성인인증이 필요한 곡입니다";
+    if (isExplicit) throw AGE_ERROR;
 
     final response = await http.get(Uri.parse(baseUrl + songID));
     dom.Document document = parser.parse(response.body);
     final lyricsContainer = document.getElementsByTagName('xmp');
 
     if (lyricsContainer.isEmpty)
-      throw '가사를 찾을 수 없습니다\nTitle : $title\nArtist : $artist\n';
+      // throw '가사를 찾을 수 없습니다\nTitle : $title\nArtist : $artist\n';
+      throw NO_RESULT;
 
-    final lyrics =
+    returnSong.lyrics =
         lyricsContainer.first.innerHtml.toString().replaceAll("...*", "");
-
-    return lyrics.trim();
   } catch (e) {
-    return '🤔 노래 검색 에러\n$e';
+    returnSong.lyrics = '🤔 노래 검색 에러\n$e';
+    throw NO_RESULT;
   }
+
+  return returnSong.lyrics;
 }
