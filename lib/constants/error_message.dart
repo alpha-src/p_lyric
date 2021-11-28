@@ -1,0 +1,2 @@
+const AGE_ERROR = "EXPLICIT";
+const NO_RESULT = "NO RESULT";
