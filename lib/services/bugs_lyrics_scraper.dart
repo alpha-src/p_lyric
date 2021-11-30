@@ -5,6 +5,7 @@ import 'package:p_lyric/models/song.dart';
 import 'package:p_lyric/constants/error_message.dart';
 
 const String baseUrl = 'https://music.bugs.co.kr/track/';
+ScrapingException _exception = new ScrapingException();
 
 /// searchQuery 를 통해 벅스에서 검색할 시 특수문자는 Uri.encodeFull 메소드에
 /// 적용되지 않는 문제점을 아래의 함수로 해결
@@ -13,7 +14,6 @@ String encodeSpecial(String targetURI) {
   RegExp _special = RegExp(r"^[+#$&?]*$");
   List<String> words = targetURI.split("");
 
-  //# $ & + ?
   for (final word in words) {
     if (word != " " && _special.hasMatch(word)) {
       switch (word) {
@@ -44,18 +44,6 @@ String encodeSpecial(String targetURI) {
   return ret;
 }
 
-/// [title], [arist] 형식으로 검색 페이지의 URL을 얻는다.
-///
-/// 중복된 노래 제목이 존재하므로 `제목, 가수명`으로 검색하는 것이다.
-/// (ex. 고백 - 10cm / 고백 - 뜨거운 감자)
-String _getSearchPageUrl(String title, String artist) {
-  final uri = title + ", " + artist;
-
-  String searchQuery = Uri.encodeFull(uri).toString();
-  searchQuery = encodeSpecial(searchQuery);
-
-  return 'https://music.bugs.co.kr/search/track?q=$searchQuery';
-}
 
 /// 검색된 곡 중 알맞은 곡의 고유 ID 값을 받아온다.
 Future<String> _getSongID(String searchedPage) async {
@@ -66,13 +54,13 @@ Future<String> _getSongID(String searchedPage) async {
     dom.Document document = parser.parse(response.body);
     final elements = document.getElementsByClassName("check");
 
-    if (elements.length == 0) return '곡 정보가 없습니다 😢';
+    if (elements.length == 0) _exception.errorHandler(no_result);
 
     String songID = elements[1].children[0].attributes['value'].toString();
 
     return songID;
   } catch (e) {
-    return '🤔 노래 검색 에러\n$e';
+    return '${e.toString()}';
   }
 }
 
@@ -97,27 +85,24 @@ Future<String> getLyricsFromBugs(String title, String artist) async {
 
   if (title == '' || artist == '') return returnSong.lyrics;
 
-  String searchPageUrl = _getSearchPageUrl(title, artist);
-  print(searchPageUrl);
+  String searchPageUrl = returnSong.songURL ?? '';
   String songID = await _getSongID(searchPageUrl);
   bool isExplicit = await isExplicitSong(songID);
 
   try {
-    if (isExplicit) throw AGE_ERROR;
+    if (isExplicit) _exception.errorHandler(age_limit);
 
     final response = await http.get(Uri.parse(baseUrl + songID));
     dom.Document document = parser.parse(response.body);
     final lyricsContainer = document.getElementsByTagName('xmp');
 
     if (lyricsContainer.isEmpty)
-      // throw '가사를 찾을 수 없습니다\nTitle : $title\nArtist : $artist\n';
-      throw NO_RESULT;
+      _exception.errorHandler('Title : $title\nArtist : $artist');
 
     returnSong.lyrics =
         lyricsContainer.first.innerHtml.toString().replaceAll("...*", "");
   } catch (e) {
-    returnSong.lyrics = '🤔 노래 검색 에러\n$e';
-    throw NO_RESULT;
+    returnSong.lyrics = '${e.toString()}';
   }
 
   return returnSong.lyrics;
