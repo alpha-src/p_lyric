@@ -2,10 +2,34 @@ import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' as parser;
 import 'package:html/dom.dart' as dom;
 import 'package:p_lyric/models/song.dart';
-import 'package:p_lyric/constants/error_message.dart';
 
 const String baseUrl = 'https://music.bugs.co.kr/track/';
-ScrapingException _exception = new ScrapingException();
+
+class AgeLimitException implements Exception {
+  @override
+  String toString() {
+    return "🤔 노래 검색 에러\n성인인증이 필요한 곡입니다.";
+  }
+}
+
+class SongNotFoundException implements Exception {
+  @override
+  String toString() {
+    return "🥲 해당 곡을 찾을 수 없습니다.";
+  }
+}
+
+class LyricsNotFoundException implements Exception {
+  final String _title;
+  final String _artist;
+
+  LyricsNotFoundException(this._title, this._artist);
+
+  @override
+  String toString() {
+    return "😵 해당 곡의 가사를 찾을 수 없습니다.\nTitle: $_title\nArtist: $_artist";
+  }
+}
 
 /// searchQuery 를 통해 벅스에서 검색할 시 특수문자는 Uri.encodeFull 메소드에
 /// 적용되지 않는 문제점을 아래의 함수로 해결
@@ -54,7 +78,7 @@ Future<String> _getSongID(String searchedPage) async {
     dom.Document document = parser.parse(response.body);
     final elements = document.getElementsByClassName("check");
 
-    if (elements.length == 0) _exception.errorHandler(no_result);
+    if (elements.length == 0) return SongNotFoundException().toString();
 
     String songID = elements[1].children[0].attributes['value'].toString();
 
@@ -90,14 +114,14 @@ Future<String> getLyricsFromBugs(String title, String artist) async {
   bool isExplicit = await isExplicitSong(songID);
 
   try {
-    if (isExplicit) _exception.errorHandler(age_limit);
+    if (isExplicit) throw AgeLimitException().toString();
 
     final response = await http.get(Uri.parse(baseUrl + songID));
     dom.Document document = parser.parse(response.body);
     final lyricsContainer = document.getElementsByTagName('xmp');
 
     if (lyricsContainer.isEmpty)
-      _exception.errorHandler('Title : $title\nArtist : $artist');
+      throw LyricsNotFoundException(title, artist).toString();
 
     returnSong.lyrics =
         lyricsContainer.first.innerHtml.toString().replaceAll("...*", "");
