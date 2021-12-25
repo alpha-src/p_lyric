@@ -29,6 +29,7 @@ class MusicProvider extends GetxController {
     _enableLyricsUpdating = state;
     if (_track.value.artist?.isNotEmpty ?? false) _updateLyric(_track.value);
   }
+
   bool _enableLyricsUpdating = true;
 
   @override

@@ -19,7 +19,7 @@ class Song {
   }
 
   Song.fromBugs(String title, String artist) {
-    this.songURL = _getBugsSongUrl(title, artist);
+    this.songURL = getBugsSongUrl(title, artist);
     this.artist = artist;
     this.title = title;
     this.lyrics = "";
@@ -30,7 +30,7 @@ class Song {
 ///
 /// 중복된 노래 제목이 존재하므로 `제목, 가수명`으로 검색하는 것이다.
 /// (ex. 고백 - 10cm / 고백 - 뜨거운 감자)
-String _getBugsSongUrl(String title, String artist) {
+String getBugsSongUrl(String title, String artist) {
   final uri = title + ", " + artist;
 
   String searchQuery = Uri.encodeFull(uri).toString();

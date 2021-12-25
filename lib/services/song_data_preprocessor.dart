@@ -44,8 +44,8 @@ class SongDataPreprocessor {
     filteredTitle = title.split("(피처링")[0];
     filteredTitle = filteredTitle.split("(")[0];
     filteredTitle = filteredTitle.split("[")[0];
- 
-    // 제목에 영어와 한국어 모두 포함되어있을 때
+
+// 제목에 영어와 한국어 모두 포함되어있을 때
     if (!_korean.hasMatch(filteredTitle) && !_english.hasMatch(filteredTitle))
       filteredTitle = _divideLanguage(title);
 

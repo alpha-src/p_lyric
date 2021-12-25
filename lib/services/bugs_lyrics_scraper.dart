@@ -68,7 +68,6 @@ String encodeSpecial(String targetURI) {
   return ret;
 }
 
-
 /// 검색된 곡 중 알맞은 곡의 고유 ID 값을 받아온다.
 Future<String> _getSongID(String searchedPage) async {
   try {
