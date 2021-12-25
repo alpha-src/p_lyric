@@ -294,7 +294,7 @@ class _AlbumCoverImage extends StatelessWidget {
               duration: kThemeChangeDuration,
               child: hasImage
                   ? Image(
-                      image: image!,
+                      image: image,
                       height: imageDiameter,
                       width: imageDiameter,
                     )
