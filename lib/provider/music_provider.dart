@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:nowplaying/nowplaying.dart';
 import 'package:p_lyric/services/bugs_lyrics_scraper.dart';
 import 'package:p_lyric/widgets/default_snack_bar.dart';
-
 import 'utils/waiter.dart';
 
 class MusicProvider extends GetxController {
@@ -13,7 +12,7 @@ class MusicProvider extends GetxController {
 
   /// 현재 재생되고 있는 트랙의 가사를 반환한다.
   String get lyric => _lyric;
-  String _lyric = '';
+  String _lyric = "";
 
   /// 음악 플레이어의 상태를 반환한다.
   NowPlayingState get trackState => _trackState;
@@ -22,13 +21,14 @@ class MusicProvider extends GetxController {
   bool get areLyricsUpdating => _gettingLyricsFutures.isNotEmpty;
 
   /// 가사를 얻고있는 [Future] 함수들의 [Set]이다.
-  Set<Future<String>> _gettingLyricsFutures = {};
+  Set<String?> _gettingLyricsFutures = {};
 
   bool get enableLyricsUpdating => _enableLyricsUpdating;
   set enableLyricsUpdating(bool state) {
     _enableLyricsUpdating = state;
     if (_track.value.artist?.isNotEmpty ?? false) _updateLyric(_track.value);
   }
+
   bool _enableLyricsUpdating = true;
 
   @override
@@ -41,10 +41,12 @@ class MusicProvider extends GetxController {
   void _updateLyric(NowPlayingTrack track) async {
     if (!_enableLyricsUpdating) return;
 
-    final gettingLyricsFuture = getLyricsFromBugs(
+    _lyric = await getLyricsFromBugs(
       track.title ?? '',
       track.artist ?? '',
     );
+
+    final gettingLyricsFuture = _lyric;
     _gettingLyricsFutures.add(gettingLyricsFuture);
     update();
 
