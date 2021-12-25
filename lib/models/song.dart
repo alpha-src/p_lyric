@@ -1,7 +1,7 @@
 class Song {
-  String? songURL;
-  String? title;
-  String? artist;
+  final String songURL;
+  final String title;
+  final String artist;
   String lyrics = "";
 
   Song({
@@ -11,17 +11,10 @@ class Song {
     required this.lyrics,
   });
 
-  Song.fromGenius(Map<String, dynamic> json) {
-    this.songURL = json['response']['hits'][0]['result']['url'];
-    this.title = json['response']['hits'][0]['result']['full_title'];
-    this.artist = json['response']['hits'][0]['result']['artist_names'];
-    this.lyrics = "";
-  }
-
-  Song.fromBugs(String title, String artist) {
-    this.songURL = getBugsSongUrl(title, artist);
-    this.artist = artist;
-    this.title = title;
+  Song.fromBugs(String title, String artist)
+      : this.songURL = getBugsSongUrl(title, artist),
+        this.artist = artist,
+        this.title = title {
     this.lyrics = "";
   }
 }
