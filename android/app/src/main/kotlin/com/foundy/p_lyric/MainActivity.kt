@@ -1,4 +1,4 @@
-package com.example.p_lyric
+package com.foundy.p_lyric
 
 import android.content.Context
 import android.content.Intent
