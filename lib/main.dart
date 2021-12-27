@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:nowplaying/nowplaying.dart';
+import 'package:p_lyric/provider/ad_state.dart';
 import 'package:p_lyric/style/color.dart';
 import 'package:p_lyric/style/font.dart';
 import 'package:p_lyric/views/home_page.dart';
@@ -11,6 +13,8 @@ void main() async {
   NowPlaying.instance.start(getLyricsFromBugs);
 
   WidgetsFlutterBinding.ensureInitialized();
+
+  Get.put(AdState(MobileAds.instance.initialize()));
 
   runApp(MyApp());
 }
