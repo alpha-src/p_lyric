@@ -10,6 +10,9 @@
 
 ## 변경사항
 
+### 1.0.0+3
+- 음악 데이터 전처리기 적용 및 단순화 [#81](https://github.com/Foundy-LLC/p_lyric/pull/81)
+
 ### 1.0.0+2
 - 광고 임시 성능 향상 [#80](https://github.com/Foundy-LLC/p_lyric/pull/80)
 
