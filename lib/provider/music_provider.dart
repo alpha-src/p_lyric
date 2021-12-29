@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:nowplaying/nowplaying.dart';
 import 'package:p_lyric/services/bugs_lyrics_scraper.dart';
 import 'package:p_lyric/widgets/default_snack_bar.dart';
-import 'package:p_lyric/services/song_data_preprocessor.dart';
 
 import 'utils/waiter.dart';
 
@@ -43,11 +42,10 @@ class MusicProvider extends GetxController {
   void _updateLyric(NowPlayingTrack track) async {
     if (!_enableLyricsUpdating) return;
 
-    String _title = SongDataPreprocessor.filterSongTitle(track.title ?? "");
-    String _artist = SongDataPreprocessor.filterArtist(track.artist ?? "");
-
-    final gettingLyricsFuture = getLyricsFromBugs(_title, _artist);
-
+    final gettingLyricsFuture = getLyricsFromBugs(
+      track.title ?? '',
+      track.artist ?? '',
+    );
     _gettingLyricsFutures.add(gettingLyricsFuture);
     update();
 
