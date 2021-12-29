@@ -2,6 +2,7 @@ import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' as parser;
 import 'package:html/dom.dart' as dom;
 import 'package:p_lyric/models/song.dart';
+import 'package:p_lyric/services/song_data_preprocessor.dart';
 
 const String baseUrl = 'https://music.bugs.co.kr/track/';
 
@@ -76,6 +77,9 @@ Future<bool> isExplicitSong(String songID) async {
 /// replaceAll("...*", "") 부분은 팝송 중 간혹 "...*" 을 마지막에 포함시키는
 /// 일종의 워터마크 같은 문자열이 있어 이 부분은 없애준다.
 Future<String> getLyricsFromBugs(String title, String artist) async {
+  title = SongDataPreprocessor.filterSongTitle(title);
+  artist = SongDataPreprocessor.filterArtist(artist);
+
   Song searchedSong = Song.fromBugs(title, artist);
 
   if (title == '' || artist == '') return searchedSong.lyrics;
