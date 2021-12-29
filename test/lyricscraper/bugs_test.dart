@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:p_lyric/services/song_data_preprocessor.dart';
+import 'package:p_lyric/services/song_data_filter.dart';
 
 void main() {
   test("Bugs lyrics scraper title and artist filtering test", () {
@@ -46,12 +46,12 @@ void main() {
 
     int index = 0;
     for (final song in testTitle) {
-      expect(SongDataPreprocessor.filterSongTitle(song), filterTitle[index++]);
+      expect(song.filterSongTitle(), filterTitle[index++]);
     }
 
     index = 0;
     for (final artist in testArtist) {
-      expect(SongDataPreprocessor.filterArtist(artist), filterArtist[index++]);
+      expect(artist.filterSongArtist(), filterArtist[index++]);
     }
   });
 }
