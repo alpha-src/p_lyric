@@ -101,6 +101,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     final textTheme = Get.textTheme;
 
     return DefaultContainer(
+      hasBannerAd: true,
       title: const Text('PLyric'),
       actions: [
         PopupMenuButton<Widget>(

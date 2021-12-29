@@ -11,6 +11,7 @@ class DefaultContainer extends StatefulWidget {
     required this.body,
     this.floatingActionButton,
     this.floatingActionButtonLocation,
+    this.hasBannerAd = false,
   }) : super(key: key);
 
   final Text title;
@@ -18,6 +19,7 @@ class DefaultContainer extends StatefulWidget {
   final Widget body;
   final Widget? floatingActionButton;
   final FloatingActionButtonLocation? floatingActionButtonLocation;
+  final bool hasBannerAd;
 
   @override
   State<DefaultContainer> createState() => _DefaultContainerState();
@@ -29,17 +31,19 @@ class _DefaultContainerState extends State<DefaultContainer> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final adState = Get.find<AdState>();
-    adState.initialization.then((status) {
-      setState(() {
-        banner = BannerAd(
-          adUnitId: adState.bannerAdUnitId,
-          size: AdSize.banner,
-          request: AdRequest(),
-          listener: adState.bannerAdListener,
-        )..load();
+    if (widget.hasBannerAd) {
+      final adState = Get.find<AdState>();
+      adState.initialization.then((status) {
+        setState(() {
+          banner = BannerAd(
+            adUnitId: adState.bannerAdUnitId,
+            size: AdSize.banner,
+            request: AdRequest(),
+            listener: adState.bannerAdListener,
+          )..load();
+        });
       });
-    });
+    }
   }
 
   @override
@@ -117,12 +121,13 @@ class _DefaultContainerState extends State<DefaultContainer> {
               ),
             ),
           ),
-          AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            curve: Curves.easeOut,
-            height: banner != null ? AdSize.banner.height.toDouble() : 0,
-            child: banner != null ? AdWidget(ad: banner!) : null,
-          ),
+          if (widget.hasBannerAd)
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.easeOut,
+              height: banner != null ? AdSize.banner.height.toDouble() : 0,
+              child: banner != null ? AdWidget(ad: banner!) : null,
+            ),
         ],
       ),
     );

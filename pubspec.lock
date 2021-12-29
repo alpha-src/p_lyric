@@ -103,10 +103,12 @@ packages:
   google_mobile_ads:
     dependency: "direct main"
     description:
-      name: google_mobile_ads
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.1"
+      path: "packages/google_mobile_ads"
+      ref: "feature/suamusica"
+      resolved-ref: "0afd44e0d0218ee479da3a2623a4dbee1c06ceb5"
+      url: "https://github.com/SuaMusica/googleads-mobile-flutter.git"
+    source: git
+    version: "1.0.0"
   html:
     dependency: transitive
     description:
