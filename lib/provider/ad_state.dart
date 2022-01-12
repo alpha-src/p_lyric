@@ -6,7 +6,7 @@ class AdState extends GetxController {
 
   AdState(this.initialization);
 
-  String get bannerAdUnitId => 'ca-app-pub-7959757131964580/6706531114';
+  String get bannerAdUnitId => 'ca-app-pub-1985155061746313/2210944410';
 
   BannerAdListener get bannerAdListener => _bannerAdListener;
 

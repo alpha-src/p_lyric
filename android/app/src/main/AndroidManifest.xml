@@ -46,7 +46,7 @@
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-7959757131964580~5041261507"/>
+            android:value="ca-app-pub-1985155061746313~2925260289"/>
 
         <service
             android:name="com.gomes.nowplaying.NowPlayingListenerService"
