@@ -12,7 +12,7 @@ void showSnackBar(
       message,
       style: Get.textTheme.bodyText2!.copyWith(
         height: 1.6,
-        color: Colors.white,
+        color: context.isDarkMode ? Colors.black : Colors.white,
       ),
     ),
     duration: duration,
